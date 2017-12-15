@@ -1,11 +1,11 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 25
     defaultConfig {
         applicationId "tk.dcmmcc.funcamera"
         minSdkVersion 23
-        targetSdkVersion 26
+        targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -20,9 +20,54 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    //默认是sdk26
+    //implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    //欢迎界面用的库
+    compile 'com.stephentuso:welcome:1.4.1'
+
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    // Set this dependency to use JUnit 4 rules
+    androidTestCompile 'com.android.support.test:runner'
+    // Set this dependency to build and run Espresso tests
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    //用到的support lib modules
+    //下面四个用于MaterialDrawer
+    implementation supportDependencies.appCompat
+    implementation supportDependencies.recyclerView
+    implementation supportDependencies.supportAnnotation
+    implementation supportDependencies.design
+    //这个用于关于中的CardView
+    implementation supportDependencies.cardView
+
+    //MaterialDrawer 抽屉菜单
+    implementation("com.mikepenz:materialdrawer:6.0.2@aar") {
+        transitive = true
+    }
+
+    //常用的图标
+    // icon fonts used inside the sample
+    // https://github.com/mikepenz/Android-Iconics
+    implementation 'com.mikepenz:google-material-typeface:3.0.1.1.original@aar'
+    implementation 'com.mikepenz:fontawesome-typeface:4.7.0.1@aar'
+    implementation 'com.mikepenz:octicons-typeface:3.0.0.1@aar'
+
+    //加载图片的常用库
+    // used to showcase how to load images
+    implementation 'com.squareup.picasso:picasso:2.5.2'
+    implementation 'com.github.bumptech.glide:glide:3.8.0'
+
+    //用于MaterialDrawer的动画特效
+    //used to provide different itemAnimators for the RecyclerView
+    //https://github.com/mikepenz/ItemAnimators
+    implementation 'com.mikepenz:itemanimators:1.0.1@aar'
+
+    //自动生成该软件用到的开源项目列表
+    // used to generate the Open Source section
+    // https://github.com/mikepenz/AboutLibraries
+    implementation('com.mikepenz:aboutlibraries:6.0.1@aar') {
+        transitive = true
+    }
 }
