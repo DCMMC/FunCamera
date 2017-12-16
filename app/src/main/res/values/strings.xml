@@ -26,6 +26,11 @@
     <string name="object_detect_launch_title">实时物体检测, Powered by Tensorflow</string>
     <string name="launch">启动</string>
 
+    <!-- Tensorflow -->
+    <string name="description_info">Info</string>
+    <string name="request_permission">This sample needs camera permission.</string>
+    <string name="camera_error">This device doesn\'t support Camera2 API.</string>
+
     <!-- Strings related to Settings -->
 
     <!-- Example General settings -->

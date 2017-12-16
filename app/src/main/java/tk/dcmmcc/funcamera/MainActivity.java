@@ -3,6 +3,7 @@ package tk.dcmmcc.funcamera;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import com.mikepenz.aboutlibraries.Libs;
@@ -19,6 +20,8 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.stephentuso.welcome.WelcomeHelper;
+
+import tk.dcmmcc.funcamera.tensorflow.DetectorActivity;
 
 /**
  * 主Activity
@@ -140,6 +143,22 @@ public class MainActivity extends AppCompatActivity {
             drawerResult.setSelection(1, false);
         }
 
+        //handle cardViews
+        CardView cardCamera = (CardView) findViewById(R.id.card_camera),
+                cardObjectDetect = (CardView) findViewById(R.id.card_object_detect);
+        cardCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO 转跳到相机Activity
+            }
+        });
+        cardObjectDetect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, DetectorActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
