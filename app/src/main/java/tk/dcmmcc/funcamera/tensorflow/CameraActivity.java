@@ -40,10 +40,14 @@ import android.view.KeyEvent;
 import android.view.Surface;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import org.tensorflow.demo.env.ImageUtils;
+
 import java.nio.ByteBuffer;
-import tk.dcmmcc.funcamera.env.ImageUtils;
+
 import tk.dcmmcc.funcamera.env.Logger;
 import tk.dcmmcc.funcamera.R; // Explicit import needed for internal Google builds.
+
 
 public abstract class CameraActivity extends Activity
     implements OnImageAvailableListener, Camera.PreviewCallback {

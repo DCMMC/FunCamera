@@ -31,12 +31,12 @@ import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import tk.dcmmcc.funcamera.env.ImageUtils;
 import tk.dcmmcc.funcamera.env.Logger;
 import tk.dcmmcc.funcamera.R;
 
 import java.io.IOException;
 import java.util.List;
+import org.tensorflow.demo.env.ImageUtils;
 
 public class LegacyCameraConnectionFragment extends Fragment {
   private Camera camera;

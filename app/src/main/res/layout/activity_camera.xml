@@ -19,4 +19,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#000"
-    tools:context="tk.dcmmcc.funcamera.tensorflow.CameraActivity" />
+    tools:context="org.tensorflow.funcamera.tk.dcmmcc.funcamera.tensorflow.CameraActivity" />

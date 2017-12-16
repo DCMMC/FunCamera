@@ -31,10 +31,10 @@ import android.util.Size;
 import android.util.TypedValue;
 import android.widget.Toast;
 
-import tk.dcmmcc.funcamera.tensorflow.OverlayView.DrawCallback;
+import org.tensorflow.demo.env.ImageUtils;
+
 import tk.dcmmcc.funcamera.R;
 import tk.dcmmcc.funcamera.env.BorderedText;
-import tk.dcmmcc.funcamera.env.ImageUtils;
 import tk.dcmmcc.funcamera.env.Logger;
 import tk.dcmmcc.funcamera.tracking.MultiBoxTracker;
 
@@ -187,7 +187,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
 
     trackingOverlay = (OverlayView) findViewById(R.id.tracking_overlay);
     trackingOverlay.addCallback(
-        new DrawCallback() {
+        new OverlayView.DrawCallback() {
           @Override
           public void drawCallback(final Canvas canvas) {
             tracker.draw(canvas);
@@ -198,7 +198,7 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
         });
 
     addCallback(
-        new DrawCallback() {
+        new OverlayView.DrawCallback() {
           @Override
           public void drawCallback(final Canvas canvas) {
             if (!isDebug()) {

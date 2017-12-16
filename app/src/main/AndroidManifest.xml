@@ -15,7 +15,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/MaterialDrawerTheme.Light.DarkToolbar">
-        <activity android:name=".MainActivity">
+        <activity android:name="tk.dcmmcc.funcamera.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,13 +23,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FunCameraWelcomeActivity"
+            android:name="tk.dcmmcc.funcamera.FunCameraWelcomeActivity"
             android:theme="@style/WelcomeScreenTheme" />
-        <activity android:name=".AboutActivity" />
+        <activity android:name="tk.dcmmcc.funcamera.AboutActivity" />
         <activity
-            android:name=".SettingsActivity"
+            android:name="tk.dcmmcc.funcamera.SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".tensorflow.DetectorActivity"
+        <activity android:name="tk.dcmmcc.funcamera.tensorflow.DetectorActivity"
             android:screenOrientation="portrait" />
     </application>
 

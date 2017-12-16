@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="tk.dcmmcc.funcamera.MainActivity"
+    tools:context="org.tensorflow.funcamera.tk.dcmmcc.funcamera.MainActivity"
     android:gravity="center">
 
     <android.support.v7.widget.Toolbar
