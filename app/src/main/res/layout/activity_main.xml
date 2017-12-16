@@ -15,6 +15,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
+    <!--
     <FrameLayout
         android:id="@+id/frame_container"
         android:layout_width="match_parent"
@@ -29,6 +30,158 @@
             android:text="Test"
             android:textSize="16sp" />
     </FrameLayout>
+    -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:layout_marginTop="@dimen/dp_56">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stateListAnimator="@drawable/lift_on_touch"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardCornerRadius="@dimen/dp_8"
+                app:cardUseCompatPadding="true"
+                app:cardPreventCornerOverlap="true">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/iv_header_camera"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@null"
+                        android:src="@drawable/header_object_detect"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_16"
+                        android:text="@string/camera_launch_title"
+                        android:textColor="@color/md_white_1000"
+                        android:textSize="@dimen/sp_26"
+                        android:layout_alignLeft="@id/iv_header_camera"/>
+
+                    <ImageView
+                        android:id="@+id/iv_footer_camera"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@null"
+                        android:src="@drawable/footer_object_detect"
+                        android:layout_below="@id/iv_header_camera"/>
+
+                    <TextView
+                        android:id="@+id/camera_launch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_16"
+                        android:text="@string/launch"
+                        android:textColor="@color/md_white_1000"
+                        android:textSize="@dimen/sp_16"
+                        android:layout_alignBottom="@id/iv_footer_camera"/>
+
+                    <ImageButton
+                        android:id="@+id/camera_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_alignEnd="@+id/iv_footer_camera"
+                        android:layout_alignBaseline="@+id/iv_footer_camera"
+                        android:layout_alignBottom="@+id/iv_footer_camera"
+                        android:src="@drawable/ic_launch_black_24dp"/>
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stateListAnimator="@drawable/lift_on_touch"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                app:cardCornerRadius="@dimen/dp_8"
+                app:cardUseCompatPadding="true"
+                app:cardPreventCornerOverlap="true">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/iv_header_object_detect"
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@null"
+                        android:src="@drawable/header_camera"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_16"
+                        android:text="@string/object_detect_launch_title"
+                        android:textColor="@color/md_white_1000"
+                        android:textSize="@dimen/sp_26"
+                        android:layout_alignLeft="@id/iv_header_object_detect"/>
+
+                    <ImageView
+                        android:id="@+id/iv_footer_object_detect"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:adjustViewBounds="true"
+                        android:contentDescription="@null"
+                        android:src="@drawable/footer_camera"
+                        android:layout_below="@id/iv_header_object_detect"/>
+
+                    <TextView
+                        android:id="@+id/object_detect_launch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dp_16"
+                        android:text="@string/launch"
+                        android:textColor="@color/md_white_1000"
+                        android:textSize="@dimen/sp_16"
+                        android:layout_alignBottom="@id/iv_footer_object_detect"/>
+
+                    <ImageButton
+                        android:id="@+id/object_detect_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="5dp"
+                        android:layout_alignEnd="@+id/iv_footer_object_detect"
+                        android:layout_alignBaseline="@+id/iv_footer_object_detect"
+                        android:layout_alignBottom="@+id/iv_footer_object_detect"
+                        android:src="@drawable/ic_launch_black_24dp"/>
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
 </RelativeLayout>
 
     <!--

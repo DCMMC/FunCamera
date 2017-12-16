@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
@@ -71,12 +70,31 @@ public class MainActivity extends AppCompatActivity {
                 .withItemAnimator(new AlphaCrossFadeAnimator())
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_home).withDescription(R.string.drawer_item_homeDesc).withIcon(GoogleMaterial.Icon.gmd_home).withIdentifier(1).withSelectable(true),
-                        new PrimaryDrawerItem().withName(R.string.drawer_item_setting).withDescription(R.string.drawer_item_settingDesc).withIcon(GoogleMaterial.Icon.gmd_settings).withIdentifier(2).withSelectable(false),
-                        new PrimaryDrawerItem().withName(R.string.about).withDescription(R.string.drawer_item_aboutDesc).withIcon(GoogleMaterial.Icon.gmd_info).withIdentifier(3).withSelectable(true),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_home)
+                                .withDescription(R.string.drawer_item_homeDesc)
+                                .withIcon(GoogleMaterial.Icon.gmd_home)
+                                .withIdentifier(1)
+                                .withSelectable(true),
+                        new PrimaryDrawerItem().withName(R.string.drawer_item_setting)
+                                .withDescription(R.string.drawer_item_settingDesc)
+                                .withIcon(GoogleMaterial.Icon.gmd_settings)
+                                .withIdentifier(2)
+                                .withSelectable(false),
+                        new PrimaryDrawerItem().withName(R.string.about)
+                                .withDescription(R.string.drawer_item_aboutDesc)
+                                .withIcon(GoogleMaterial.Icon.gmd_info)
+                                .withIdentifier(3)
+                                .withSelectable(true),
                         new SectionDrawerItem().withName(R.string.drawer_item_section_header),
-                        new SecondaryDrawerItem().withName(R.string.drawer_item_open_source).withIcon(FontAwesome.Icon.faw_github).withIdentifier(4).withSelectable(false),
-                        new SecondaryDrawerItem().withName(R.string.drawer_item_exit).withIcon(GoogleMaterial.Icon.gmd_exit_to_app).withIdentifier(5).withTag("Bullhorn").withSelectable(false)
+                        new SecondaryDrawerItem().withName(R.string.drawer_item_open_source)
+                                .withIcon(FontAwesome.Icon.faw_github)
+                                .withIdentifier(4)
+                                .withSelectable(false),
+                        new SecondaryDrawerItem().withName(R.string.drawer_item_exit)
+                                .withIcon(GoogleMaterial.Icon.gmd_exit_to_app)
+                                .withIdentifier(5)
+                                .withTag("Bullhorn")
+                                .withSelectable(false)
                 ) // add the items we want to use with our Drawer
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -121,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
             // set the selection to the item with the identifier 11
             drawerResult.setSelection(1, false);
         }
+
     }
 
     @Override

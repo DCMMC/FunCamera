@@ -22,6 +22,9 @@
     <string name="customizable">图片处理</string>
     <string name="customizable_detail">多大数十种名画效果和滤镜, 简单快速得把您拍出来的照片打造成顶级名画风格</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="camera_launch_title">通过人工智能把手机中那些普通的照片模仿出著名艺术家画作的风格</string>
+    <string name="object_detect_launch_title">实时物体检测, Powered by Tensorflow</string>
+    <string name="launch">启动</string>
 
     <!-- Strings related to Settings -->
 
