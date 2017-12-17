@@ -1,5 +1,13 @@
 # FunCamera
 
+![StillCoding](https://img.shields.io/badge/Still-Coding-green.svg)
+![License](https://img.shields.io/badge/license-Apache-brightgreen.svg)
+![build passing](https://img.shields.io/travis/rust-lang/rust.svg)
+![Author](https://img.shields.io/badge/Author-DCMMC-blue.svg)
+![WeChatID](https://img.shields.io/badge/WeChat-Kevin--0220-red.svg)
+
+**Star me if you like it!**
+
 ## Introduction
 
 > A simple camera app using TensorFlow to classify object and stylize pictures.
