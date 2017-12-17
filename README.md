@@ -8,7 +8,19 @@
 
 ## Screenshots
 
-[!main](./screenshot/main.png)
+![](./screenshot/main.png)
+
+![](./screenshot/main1.png)
+
+![](./screenshot/drawer.png)
+
+![](./screenshot/drawer1.png)
+
+![](./screenshot/open_sources.png)
+
+![](./screenshot/open_sources1.png)
+
+![](./screenshot/classfier.png)
 
 ## Credits
 
