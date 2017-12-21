@@ -149,7 +149,8 @@ public class MainActivity extends AppCompatActivity {
         cardCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO 转跳到相机Activity
+                Intent intent = new Intent(MainActivity.this, MainCameraActivity.class);
+                startActivity(intent);
             }
         });
         cardObjectDetect.setOnClickListener(new View.OnClickListener() {
@@ -161,6 +162,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 在系统将要销毁该Activity之前保存一些必要的数据
+     * @param outState 存储信息用的容器
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

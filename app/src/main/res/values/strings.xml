@@ -25,6 +25,16 @@
     <string name="camera_launch_title">通过人工智能把手机中那些普通的照片模仿出著名艺术家画作的风格</string>
     <string name="object_detect_launch_title">实时物体检测, Powered by Tensorflow</string>
     <string name="launch">启动</string>
+    <string name="no_camera_permission">无法访问相机, 请检查您的权限.</string>
+    <string name="change_camera_err">切换相机异常</string>
+    <string name="flash_camera_err">打开或关闭闪光灯错误</string>
+    <string name="not_support_camera_flash">您的相机不支持闪光灯</string>
+    <string name="close_torch">关闭闪光灯</string>
+    <string name="open_torch">开启闪光灯</string>
+    <string name="sticker">贴纸</string>
+    <string name="filter">滤镜</string>
+    <string name="text_label">标签</string>
+    <string name="open_photo_file_err">打开照片文件失败!</string>
 
     <!-- Tensorflow -->
     <string name="description_info">Info</string>

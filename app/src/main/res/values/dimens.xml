@@ -20,5 +20,6 @@
     <dimen name="px_1">1px</dimen>
 
     <dimen name="card_margin">0dp</dimen>
+    <dimen name="margin_15px">8dp</dimen>
 
 </resources>

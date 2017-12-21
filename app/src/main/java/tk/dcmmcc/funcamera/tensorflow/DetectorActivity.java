@@ -26,9 +26,13 @@ import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.media.ImageReader.OnImageAvailableListener;
+import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.util.Size;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.Toast;
 
 import org.tensorflow.demo.env.ImageUtils;
@@ -118,7 +122,18 @@ public class DetectorActivity extends CameraActivity implements OnImageAvailable
   private byte[] luminanceCopy;
 
   private BorderedText borderedText;
-  @Override
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+        //设置隐藏状态栏 SDK >= 19
+        View decorView = getWindow().getDecorView();
+        int option = View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE;
+        decorView.setSystemUiVisibility(option);
+    }
+
+    @Override
   public void onPreviewSizeChosen(final Size size, final int rotation) {
     final float textSizePx =
         TypedValue.applyDimension(

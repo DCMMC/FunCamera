@@ -1,0 +1,70 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff">
+
+    <!-- 显示预览图形 -->
+    <RelativeLayout
+        android:id="@+id/buttonLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- 相机画面 -->
+        <TextureView
+            android:id="@+id/camera_textureView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" />
+
+        <!-- 拍照功能按钮组 -->
+        <RelativeLayout
+            android:id="@+id/control"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:background="#4DFFFFFF">
+
+            <!-- 拍照按钮 -->
+            <Button
+                android:id="@+id/takepicture"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_centerInParent="true"
+                android:background="@drawable/btn_take_photo_selector" />
+        </RelativeLayout>
+
+        <!-- 闪光灯和前后置摄像头转换 -->
+        <RelativeLayout
+            android:id="@+id/camera_top"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:layout_alignParentTop="true"
+            android:background="#00000000">
+
+            <ImageView
+                android:id="@+id/flashBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_alignParentLeft="true"
+                android:paddingBottom="10dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:src="@drawable/camera_flash_off" />
+
+            <ImageView
+                android:id="@+id/change"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingBottom="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                android:src="@drawable/camera_flip" />
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</FrameLayout>

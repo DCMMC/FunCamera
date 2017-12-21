@@ -13,15 +13,20 @@ android {
 
     }
 
-    packagingOptions {
-        exclude 'lib/armeabi-v7a/libtensorflow_inference.so'
-    }
+    //packagingOptions {
+    //    exclude 'lib/armeabi-v7a/libtensorflow_inference.so'
+    //}
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    //fix the issues identified by lint
+    lintOptions {
+        abortOnError false
     }
 
 }

@@ -3,9 +3,11 @@
     package="tk.dcmmcc.funcamera">
 
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
@@ -15,7 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/MaterialDrawerTheme.Light.DarkToolbar">
-        <activity android:name="tk.dcmmcc.funcamera.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,14 +25,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="tk.dcmmcc.funcamera.FunCameraWelcomeActivity"
+            android:name=".FunCameraWelcomeActivity"
             android:theme="@style/WelcomeScreenTheme" />
-        <activity android:name="tk.dcmmcc.funcamera.AboutActivity" />
+        <activity android:name=".AboutActivity" />
         <activity
-            android:name="tk.dcmmcc.funcamera.SettingsActivity"
+            android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name="tk.dcmmcc.funcamera.tensorflow.DetectorActivity"
+        <activity
+            android:name=".tensorflow.DetectorActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".MainCameraActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ProcessPhotoActivity"></activity>
     </application>
 
 </manifest>
