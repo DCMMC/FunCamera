@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
-import android.graphics.drawable.Drawable;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -20,8 +19,11 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -35,11 +37,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -50,8 +50,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 
-import tk.dcmmcc.funcamera.R;
-
+/**
+ * 用Camera2 API 实现的简单相机界面
+ */
 public class MainCameraActivity extends AppCompatActivity
         implements TextureView.SurfaceTextureListener{
     private TextureView mPreviewView;
@@ -135,6 +136,15 @@ public class MainCameraActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_camera);
+
+        //check permission
+        int PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
+        }
 
         //设置隐藏状态栏 SDK >= 19
         View decorView = getWindow().getDecorView();
@@ -416,10 +426,6 @@ public class MainCameraActivity extends AppCompatActivity
 
         @Override
         public void run() {
-            ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
-            byte[] bytes = new byte[buffer.remaining()];
-            buffer.get(bytes);
-
             SimpleDateFormat sdf = new SimpleDateFormat(
                     "yyyyMMdd_HHmmss",
                     Locale.US);
@@ -427,27 +433,43 @@ public class MainCameraActivity extends AppCompatActivity
             String fname = "IMG_" +
                     sdf.format(new Date())
                     + ".jpg";
-            mFile = new File(getApplication().getExternalFilesDir(null), fname);
+            mFile = new File(
+                    Environment.getExternalStorageDirectory().getAbsolutePath()
+                    + File.separator + "FunCamera");
+            //mFile = new File(getApplication().getExternalFilesDir(null), fname);
 
-            try (FileOutputStream output = new FileOutputStream(mFile)) {
-                output.write(bytes);
-                Toast.makeText(MainCameraActivity.this, "File save in " + mFile.getAbsolutePath(), Toast.LENGTH_LONG)
+            try {
+                File f = new File(mFile.getAbsolutePath());
+                if (f.isFile())
+                    if (f.delete())
+                        throw new IOException("删除文件错误");
+                if (!f.exists())
+                    if (!f.mkdirs())
+                        throw new IOException("写入文件夹错误");
+                f = new File(mFile.getAbsolutePath() + File.separator
+                        + fname);
+                if (!f.exists())
+                    if (!f.createNewFile())
+                        throw new IOException("写入文件错误");
+            } catch (IOException e) {
+                // 写入文件错误
+                Toast.makeText(MainCameraActivity.this, "写入照片出错!", Toast.LENGTH_LONG)
                         .show();
-                if (!mFile.exists() || !mFile.canRead()) {
-                    Log.e("E", "拍照文件不存在或者无权限");
-                    Toast.makeText(MainCameraActivity.this, "拍照文件不存在或者无权限",
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
+                Log.e("E", "写入文件路径 " + mFile + File.separator
+                        + fname + " 错误");
+                e.printStackTrace();
+            }
+            try (FileOutputStream output = new FileOutputStream(mFile.getAbsolutePath()
+                    + File.separator + fname)) {
                 // 转跳到照片修改界面
                 try {
-                    //image file to bitmap
-                    BufferedInputStream buf = new BufferedInputStream(
-                            new FileInputStream(mFile));
-                    byte[] bMapArray= new byte[buf.available()];
-                    buf.read(bMapArray);
-                    Bitmap bitmap = BitmapFactory.decodeByteArray(bMapArray, 0,
-                            bMapArray.length);
+                    ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
+                    byte[] bytes = new byte[buffer.remaining()];
+                    buffer.get(bytes);
+
+                    Bitmap bitmap =
+                            BitmapFactory.decodeByteArray(bytes, 0,
+                                    bytes.length, null);
                     if (bitmap != null) {
                         //put bitmap in intentExtra
                         ByteArrayOutputStream bs = new ByteArrayOutputStream();
@@ -455,10 +477,40 @@ public class MainCameraActivity extends AppCompatActivity
                         Intent intent = new Intent(MainCameraActivity.this,
                                 ProcessPhotoActivity.class);
                         intent.putExtra("byteArray", bs.toByteArray());
+                        intent.putExtra("fName", mFile.getAbsolutePath() + File.separator
+                            + fname);
 
                         startActivity(intent);
+
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, output);
+
+                        Toast.makeText(MainCameraActivity.this, "File save in " + mFile.getAbsolutePath(), Toast.LENGTH_LONG)
+                                .show();
+                        if (!mFile.exists() || !mFile.canRead()) {
+                            Log.e("E", "拍照文件不存在或者无权限");
+                            Toast.makeText(MainCameraActivity.this, "拍照文件不存在或者无权限",
+                                    Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        // 其次把文件插入到系统图库
+                        try {
+                            MediaStore.Images.Media.insertImage(getContentResolver(),
+                                    mFile.getAbsolutePath(), fname, null);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        // 最后通知图库更新
+                        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                                Uri.parse("file://" + Uri.fromFile(mFile))));
+
+                        return;
                     }
-                } catch (IOException ioe) {
+                    Log.e("E", "Bitmap为空!");
+                    Toast.makeText(MainCameraActivity.this,
+                            "Bitmap为空!",
+                            Toast.LENGTH_LONG).show();
+                } catch (Exception ioe) {
                     Log.e("E", "Fetal error: Open Photo File error");
                     Toast.makeText(MainCameraActivity.this, R.string.open_photo_file_err,
                             Toast.LENGTH_LONG).show();

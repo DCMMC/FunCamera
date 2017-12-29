@@ -36,6 +36,7 @@
     <string name="text_label">标签</string>
     <string name="open_photo_file_err">打开照片文件失败!</string>
 
+
     <!-- Tensorflow -->
     <string name="description_info">Info</string>
     <string name="request_permission">This sample needs camera permission.</string>

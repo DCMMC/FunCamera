@@ -6,9 +6,9 @@
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -37,7 +37,8 @@
         <activity
             android:name=".MainCameraActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ProcessPhotoActivity"></activity>
+        <activity android:name=".ProcessPhotoActivity" />
+        <activity android:name=".tensorflow.StylizeActivity"/>
     </application>
 
 </manifest>

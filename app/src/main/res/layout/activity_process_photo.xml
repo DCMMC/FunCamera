@@ -1,48 +1,72 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:layout_width="fill_parent"
-android:layout_height="fill_parent"
-android:background="#ffffff"
-android:orientation="vertical" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffff"
+    android:orientation="vertical" >
 
-    <LinearLayout
-        android:id="@+id/main_area"
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <HorizontalScrollView
+        android:id="@+id/list_tools"
         android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical" >
-
-        <RelativeLayout
-            android:id="@+id/drawing_view_container"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <jp.co.cyberagent.android.gpuimage.GPUImageView
-                android:id="@+id/gpuimage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-        </RelativeLayout>
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:visibility="invisible">
 
         <LinearLayout
-            android:id="@+id/toolbar_area"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="fill_parent"
-            android:orientation="vertical" >
-
-            <it.sephiroth.android.library.widget.HListView
-                android:id="@+id/list_tools"
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
-                android:background="@color/common_background"
-                android:gravity="center_vertical"
-                android:overScrollMode="always"
-                app:hlv_dividerWidth="@dimen/margin_15px"/>
+            android:layout_margin="10dp" >
 
         </LinearLayout>
-    </LinearLayout>
+    </HorizontalScrollView>
 
+    <com.ss.bottomnavigation.BottomNavigation
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        app:mode="phone">
+        <com.ss.bottomnavigation.TabItem
+            android:id="@+id/tab_sticker"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:tab_text="@string/sticker"
+            app:tab_icon="@drawable/ic_sticker_white"
+            />
+
+        <com.ss.bottomnavigation.TabItem
+            android:id="@+id/tab_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:tab_text="@string/filter"
+            app:tab_icon="@drawable/ic_camera_white"
+            />
+
+        <com.ss.bottomnavigation.TabItem
+            android:id="@+id/tab_text_label"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:tab_text="@string/text_label"
+            app:tab_icon="@drawable/ic_label_white"
+
+            />
+
+
+    </com.ss.bottomnavigation.BottomNavigation>
+
+    <FrameLayout
+        android:id="@+id/frame_fragment_containers"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_navigation"/>
+
+    <!--
     <LinearLayout
         android:id="@+id/btn_area"
         android:layout_width="fill_parent"
@@ -80,5 +104,6 @@ android:orientation="vertical" >
             android:textColor="@color/md_white_1000"
             android:textSize="22sp" />
     </LinearLayout>
+    -->
 
-</LinearLayout>
+</RelativeLayout>
