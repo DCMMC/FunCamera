@@ -123,13 +123,13 @@ public class BLBitmapUtils {
     public static String saveAsBitmap(Context context, Bitmap bitmap) {
         String folderName = BLCommonUtils.getApplicationName(context);
         if(folderName == null || folderName.equals("")) {
-            folderName = "CameraSDK";
+            folderName = "FunCamera";
         }
 
-        File parentpath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File parentPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
         String fileName = System.currentTimeMillis() + ".jpg";
         fileName = folderName + "/" + fileName;
-        File file = new File(parentpath, fileName);
+        File file = new File(parentPath, fileName);
         file.getParentFile().mkdirs();
 
         try {

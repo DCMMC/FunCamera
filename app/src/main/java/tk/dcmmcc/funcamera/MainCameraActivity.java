@@ -1,6 +1,7 @@
 package tk.dcmmcc.funcamera;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -37,7 +38,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
-import java.io.ByteArrayOutputStream;
+import com.yyx.beautifylib.model.BLBeautifyParam;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -49,6 +50,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * 用Camera2 API 实现的简单相机界面
@@ -160,31 +163,27 @@ public class MainCameraActivity extends AppCompatActivity
 
 
         Button mTakePhoto = (Button) findViewById(R.id.takepicture);
-        mTakePhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mTakePhoto.setOnClickListener((v) -> {
+            try {
+                //获取屏幕方向
+                int rotation = getWindowManager().getDefaultDisplay().getRotation();
+                //设置CaptureRequest输出到mImageReader
+                //CaptureRequest添加imageReaderSurface，不加的话就会导致ImageReader的onImageAvailable()方法不会回调
+                mPreviewBuilder.addTarget(mImageReader.getSurface());
+                //设置拍照方向
+                mPreviewBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATION.get(rotation));
+                //聚焦
+                mPreviewBuilder.set(CaptureRequest.CONTROL_AF_MODE,
+                        CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
 
-                try {
-                    //获取屏幕方向
-                    int rotation = getWindowManager().getDefaultDisplay().getRotation();
-                    //设置CaptureRequest输出到mImageReader
-                    //CaptureRequest添加imageReaderSurface，不加的话就会导致ImageReader的onImageAvailable()方法不会回调
-                    mPreviewBuilder.addTarget(mImageReader.getSurface());
-                    //设置拍照方向
-                    mPreviewBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATION.get(rotation));
-                    //聚焦
-                    mPreviewBuilder.set(CaptureRequest.CONTROL_AF_MODE,
-                            CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-
-                    //停止预览
-                    mPreviewSession.stopRepeating();
-                    //开始拍照，然后回调上面的接口重启预览，因为mPreviewBuilder设置ImageReader作为target，
-                    //所以会自动回调ImageReader的onImageAvailable()方法保存图片
-                    mPreviewSession.capture(mPreviewBuilder.build(), mSessionCaptureCallback,
-                            null);
-                } catch (CameraAccessException e) {
-                    e.printStackTrace();
-                }
+                //停止预览
+                mPreviewSession.stopRepeating();
+                //开始拍照，然后回调上面的接口重启预览，因为mPreviewBuilder设置ImageReader作为target，
+                //所以会自动回调ImageReader的onImageAvailable()方法保存图片
+                mPreviewSession.capture(mPreviewBuilder.build(), mSessionCaptureCallback,
+                        null);
+            } catch (CameraAccessException e) {
+                e.printStackTrace();
             }
         });
 
@@ -192,28 +191,20 @@ public class MainCameraActivity extends AppCompatActivity
         flashBtn = (ImageView) findViewById(R.id.flashBtn);
         //前后置摄像头切换
         ImageView changeCamera = (ImageView) findViewById(R.id.change);
-        flashBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                turnLight();
-            }
-        });
-        changeCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    mPreviewSession.stopRepeating();
-                    CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-                    isLensFacingBack = !isLensFacingBack;
-                    mCameraDevice.close();
-                    setupCamera();
-                    openCamera();
-                } catch (CameraAccessException ca) {
-                    Log.e("W", "切换相机出现异常.");
-                    Toast.makeText(MainCameraActivity.this, R.string.change_camera_err,
-                            Toast.LENGTH_LONG).show();
-                    ca.printStackTrace();
-                }
+        flashBtn.setOnClickListener(v -> turnLight());
+        changeCamera.setOnClickListener((v) -> {
+            try {
+                mPreviewSession.stopRepeating();
+                CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+                isLensFacingBack = !isLensFacingBack;
+                mCameraDevice.close();
+                setupCamera();
+                openCamera();
+            } catch (CameraAccessException ca) {
+                Log.e("W", "切换相机出现异常.");
+                Toast.makeText(MainCameraActivity.this, R.string.change_camera_err,
+                        Toast.LENGTH_LONG).show();
+                ca.printStackTrace();
             }
         });
     }
@@ -404,24 +395,37 @@ public class MainCameraActivity extends AppCompatActivity
 
         //监听ImageReader的事件，当有图像流数据可用时会回调onImageAvailable方法，它的参数就是预览帧数据，
         //可以对这帧数据进行处理
-        mImageReader.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
-            @Override
-            public void onImageAvailable(ImageReader reader) {
-                mHandler.post(new ImageSaver(reader.acquireNextImage()));
-            }
-        }, mHandler);
+        mImageReader.setOnImageAvailableListener((reader) ->
+                mHandler.post(new ImageSaver(reader.acquireNextImage(),MainCameraActivity.this))
+            , mHandler);
     }
 
     /**
      * 存储照片
      */
     public class ImageSaver implements Runnable {
-
         private Image mImage;
         private File mFile;
+        private Activity activity;
+        private final int REQUEST_CODE_PERMISSION = 0;
 
-        ImageSaver(Image image) {
+        ImageSaver(Image image, Activity activity) {
             this.mImage = image;
+            this.activity = activity;
+        }
+
+        //跳转图片选择页面
+        @AfterPermissionGranted(REQUEST_CODE_PERMISSION)
+        private void gotoPhotoPickActivity(String fName) {
+            String[] perms = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            if (EasyPermissions.hasPermissions(activity, perms)) {
+                //BLPickerParam.startActivity(ProcessPhotoActivity.this);
+                BLBeautifyParam param = new BLBeautifyParam(Arrays.asList(new String[]{fName}));
+                BLBeautifyParam.startActivity(activity, param);
+            } else {
+                EasyPermissions.requestPermissions(activity, "图片选择需要以下权限:\n\n1.访问读写权限",
+                        REQUEST_CODE_PERMISSION, perms);
+            }
         }
 
         @Override
@@ -430,13 +434,14 @@ public class MainCameraActivity extends AppCompatActivity
                     "yyyyMMdd_HHmmss",
                     Locale.US);
 
-            String fname = "IMG_" +
+            String fName = "IMG_" +
                     sdf.format(new Date())
                     + ".jpg";
-            mFile = new File(
-                    Environment.getExternalStorageDirectory().getAbsolutePath()
-                    + File.separator + "FunCamera");
-            //mFile = new File(getApplication().getExternalFilesDir(null), fname);
+            //mFile = new File(
+            //        Environment.getExternalStorageDirectory().getAbsolutePath()
+            //       + File.separator + "FunCamera");
+            mFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                + File.separator + "FunCamera");
 
             try {
                 File f = new File(mFile.getAbsolutePath());
@@ -447,7 +452,7 @@ public class MainCameraActivity extends AppCompatActivity
                     if (!f.mkdirs())
                         throw new IOException("写入文件夹错误");
                 f = new File(mFile.getAbsolutePath() + File.separator
-                        + fname);
+                        + fName);
                 if (!f.exists())
                     if (!f.createNewFile())
                         throw new IOException("写入文件错误");
@@ -456,11 +461,11 @@ public class MainCameraActivity extends AppCompatActivity
                 Toast.makeText(MainCameraActivity.this, "写入照片出错!", Toast.LENGTH_LONG)
                         .show();
                 Log.e("E", "写入文件路径 " + mFile + File.separator
-                        + fname + " 错误");
+                        + fName + " 错误");
                 e.printStackTrace();
             }
             try (FileOutputStream output = new FileOutputStream(mFile.getAbsolutePath()
-                    + File.separator + fname)) {
+                    + File.separator + fName)) {
                 // 转跳到照片修改界面
                 try {
                     ByteBuffer buffer = mImage.getPlanes()[0].getBuffer();
@@ -472,17 +477,19 @@ public class MainCameraActivity extends AppCompatActivity
                                     bytes.length, null);
                     if (bitmap != null) {
                         //put bitmap in intentExtra
-                        ByteArrayOutputStream bs = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bs);
-                        Intent intent = new Intent(MainCameraActivity.this,
-                                ProcessPhotoActivity.class);
-                        intent.putExtra("byteArray", bs.toByteArray());
-                        intent.putExtra("fName", mFile.getAbsolutePath() + File.separator
-                            + fname);
-
-                        startActivity(intent);
-
+                        //ByteArrayOutputStream bs = new ByteArrayOutputStream();
+                        //bitmap.compress(Bitmap.CompressFormat.JPEG, 50, bs);
+                        //Intent intent = new Intent(MainCameraActivity.this,
+                        //        ProcessPhotoActivity.class);
+                        //intent.putExtra("byteArray", bs.toByteArray());
+                        //intent.putExtra("fName", mFile.getAbsolutePath() + File.separator
+                        //    + fName);
+                        //startActivity(intent);
+                        //保存
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, output);
+                        //处理照片
+                        gotoPhotoPickActivity(mFile.getAbsolutePath()
+                                + File.separator + fName);
 
                         Toast.makeText(MainCameraActivity.this, "File save in " + mFile.getAbsolutePath(), Toast.LENGTH_LONG)
                                 .show();
@@ -496,13 +503,15 @@ public class MainCameraActivity extends AppCompatActivity
                         // 其次把文件插入到系统图库
                         try {
                             MediaStore.Images.Media.insertImage(getContentResolver(),
-                                    mFile.getAbsolutePath(), fname, null);
+                                    mFile.getAbsolutePath() + File.separator + fName,
+                                    fName, null);
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }
                         // 最后通知图库更新
                         sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                                Uri.parse("file://" + Uri.fromFile(mFile))));
+                                Uri.parse("file://" + Uri.fromFile(new File(
+                                        mFile.getAbsolutePath() + File.separator + fName)))));
 
                         return;
                     }

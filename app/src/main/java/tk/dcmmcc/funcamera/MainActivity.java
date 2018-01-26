@@ -5,7 +5,8 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.widget.ImageButton;
+
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
@@ -18,10 +19,9 @@ import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.stephentuso.welcome.WelcomeHelper;
-
 import tk.dcmmcc.funcamera.tensorflow.DetectorActivity;
+import tk.dcmmcc.funcamera.tensorflow.StylizeActivity;
 
 /**
  * 主入口Activity
@@ -99,9 +99,7 @@ public class MainActivity extends ActionBarActivity {
                                 .withTag("Bullhorn")
                                 .withSelectable(false)
                 ) // add the items we want to use with our Drawer
-                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-                    @Override
-                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                .withOnDrawerItemClickListener( (view, position, drawerItem) -> {
                         //check if the drawerItem is set.
                         //there are different reasons for the drawerItem to be null
                         //--> click on the header
@@ -131,8 +129,7 @@ public class MainActivity extends ActionBarActivity {
                         }
 
                         return false;
-                    }
-                })
+                    })
                 .withSavedInstance(savedInstanceState)
                 .withShowDrawerOnFirstLaunch(true)
                 .build();
@@ -146,19 +143,19 @@ public class MainActivity extends ActionBarActivity {
         //handle cardViews
         CardView cardCamera = (CardView) findViewById(R.id.card_camera),
                 cardObjectDetect = (CardView) findViewById(R.id.card_object_detect);
-        cardCamera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        cardCamera.setOnClickListener((view) -> {
                 Intent intent = new Intent(MainActivity.this, MainCameraActivity.class);
                 startActivity(intent);
-            }
-        });
-        cardObjectDetect.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            });
+        cardObjectDetect.setOnClickListener((view) -> {
                 Intent intent = new Intent(MainActivity.this, DetectorActivity.class);
                 startActivity(intent);
-            }
+            });
+        //debug
+        findViewById(R.id.camera_button).setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this,
+                    StylizeActivity.class);
+            startActivity(intent);
         });
     }
 

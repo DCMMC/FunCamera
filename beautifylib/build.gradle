@@ -5,7 +5,7 @@ android {
     buildToolsVersion '26.0.2'
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 23
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
@@ -40,4 +40,7 @@ dependencies {
     //裁剪库
 //    compile 'com.yalantis:ucrop:2.2.0'
     compile 'com.yalantis:ucrop:2.2.0-native'
+
+    //tensorflow demo
+    compile project(':demo')
 }

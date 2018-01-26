@@ -1,16 +1,13 @@
 package com.yyx.beautifylib.utils;
 
 import android.content.Context;
-
 import com.muzhi.camerasdk.library.filter.GPUImageFilter;
 import com.muzhi.camerasdk.library.filter.GPUImageView;
 import com.muzhi.camerasdk.library.filter.util.ImageFilterTools;
 import com.muzhi.camerasdk.library.filter.util.ImageFilterTools.FilterType;
 import com.yyx.beautifylib.R;
 import com.yyx.beautifylib.model.Filter_Effect_Info;
-
 import java.util.ArrayList;
-
 
 /**
  * 特效文件
@@ -22,7 +19,9 @@ public class FilterUtils {
 	 */
 	public static ArrayList<Filter_Effect_Info> getEffectList(){
 		
-		ArrayList<Filter_Effect_Info> effect_list = new ArrayList<Filter_Effect_Info>();
+		ArrayList<Filter_Effect_Info> effect_list = new ArrayList<>();
+
+		/******************* 加上一些 TensorFlow Stylize 的图片 ***********************/
 		
 		effect_list.add(new Filter_Effect_Info("原图", R.drawable.camerasdk_filter_normal,null));
 		effect_list.add(new Filter_Effect_Info("创新", R.drawable.camerasdk_filter_in1977, FilterType.I_1977));
@@ -42,18 +41,22 @@ public class FilterUtils {
 		effect_list.add(new Filter_Effect_Info("优雅", R.drawable.camerasdk_filter_valencia, FilterType.I_VALENCIA));
 		effect_list.add(new Filter_Effect_Info("日系", R.drawable.camerasdk_filter_walden, FilterType.I_WALDEN));
 		effect_list.add(new Filter_Effect_Info("新潮", R.drawable.camerasdk_filter_xproii, FilterType.I_XPROII));
-		
+
+
 		return effect_list;
 		
 	}
 
-	/** 添加滤镜
+	/**
+     * 添加滤镜
 	 * @param context
 	 * @param filterType
 	 * @param imageView
 	 */
 	public static void addFilter(Context context, ImageFilterTools.FilterType filterType, GPUImageView imageView){
-		GPUImageFilter filter;
+		// 首先判断是否是 TensorFlow Stylize 类型
+        
+	    GPUImageFilter filter;
 		if (filterType == null) {
 			filter = new GPUImageFilter();
 		} else {

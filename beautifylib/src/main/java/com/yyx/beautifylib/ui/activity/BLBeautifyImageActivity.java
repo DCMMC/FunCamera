@@ -1,21 +1,29 @@
 package com.yyx.beautifylib.ui.activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.muzhi.camerasdk.library.views.HorizontalListView;
 import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.UCropActivity;
@@ -40,54 +48,45 @@ import com.yyx.beautifylib.utils.BLConfigManager;
 import com.yyx.beautifylib.utils.BLStickerUtils;
 import com.yyx.beautifylib.utils.FilterUtils;
 import com.yyx.beautifylib.view.CustomViewPager;
-
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.yyx.beautifylib.R.id.effect_listview;
-import static com.yyx.beautifylib.R.id.txt_graffiti;
-
 /**
  * Created by Administrator on 2017/4/15.
  * 美化图片
  */
-
 public class BLBeautifyImageActivity extends BLToolBarActivity implements View.OnClickListener {
     private static int TXT_NORMAL_COLOR = Color.BLACK;
     private static int TXT_SELECTED_COLOR;
 
-
-    private enum FUN_TYPE {FILTER, STICKER, TAG, CROP, SCRAWL, EDIT}
+    private enum FUN_TYPE {STYLIZE, FILTER, STICKER, TAG, CROP, SCRAWL, EDIT}
 
     private FUN_TYPE mFunType = FUN_TYPE.FILTER;
     private CustomViewPager mViewPager;
     private RelativeLayout mRlContainer;
-    private HorizontalListView mHlvFilter, mHlvSticker;
+    private HorizontalListView mHlvFilter, mHlvSticker, mHlvStylize;
     private Button mBtnCreateTag;
-    private TextView mTvFilter, mTvSticker, mTvTag, mTvCrop, mTvScrawl, mTvEdit, mTvMosaic;
-
+    private TextView mTvStylize, mTvFilter, mTvSticker, mTvTag, mTvCrop, mTvScrawl, mTvEdit, mTvMosaic;
     private Filter_Effect_Adapter mFilterAdapter;
+    private StylizeAdapter mStylizeAdapter;
     private Filter_Sticker_Adapter mStickerAdapter;
     private List<Filter_Effect_Info> mFilterData = new ArrayList<>(); //特效
     private List<BLStickerInfo> mStickerData = new ArrayList<>();
     private List<String> imageList;
-
     private AlertDialog mTextStickerDialog;
     private EditText mEtStickerText;
     private Button mBtnDialogConfirm;
-
     private FragmentViewPagerAdapter fAdapter;
     private List<Fragment> fragments;
     private int curPosition;
-
     private BLBeautifyParam mParam;
-
     private TagEditDialog mDialog;
     private TagViewGroup.OnTagGroupClickListener mTagGroupClickListener;
-
     private MergeImageTask mMergeTask;
 //    private List<String> mMergeList = new ArrayList<>();
 
@@ -131,14 +130,16 @@ public class BLBeautifyImageActivity extends BLToolBarActivity implements View.O
     protected void initView() {
         mViewPager = getViewById(R.id.beautify_image_viewpager);
         mRlContainer = getViewById(R.id.content_container);
-        mHlvFilter = getViewById(effect_listview);
+        mHlvStylize = getViewById(R.id.stylize_listView);
+        mHlvFilter = getViewById(R.id.effect_listview);
         mHlvSticker = getViewById(R.id.sticker_listview);
         mBtnCreateTag = getViewById(R.id.add_tag_btn);
+        mTvStylize = getViewById(R.id.txt_stylize);
         mTvFilter = getViewById(R.id.txt_effect);
         mTvSticker = getViewById(R.id.txt_sticker);
         mTvTag = getViewById(R.id.txt_tag);
         mTvCrop = getViewById(R.id.txt_cropper);
-        mTvScrawl = getViewById(txt_graffiti);
+        mTvScrawl = getViewById(R.id.txt_graffiti);
         mTvEdit = getViewById(R.id.txt_enhance);
         mTvMosaic = getViewById(R.id.txt_mosaic);
     }
@@ -156,6 +157,7 @@ public class BLBeautifyImageActivity extends BLToolBarActivity implements View.O
         mViewPager.setAdapter(fAdapter);
         mViewPager.setCurrentItem(curPosition);
         mViewPager.setOffscreenPageLimit(imageList.size());
+
 
         mFilterData = FilterUtils.getEffectList();
         mStickerData = BLStickerUtils.createStickerInfoList();
@@ -188,11 +190,31 @@ public class BLBeautifyImageActivity extends BLToolBarActivity implements View.O
         mBtnCreateTag.setOnClickListener(this);
         mTvEdit.setOnClickListener(this);
         mTvSticker.setOnClickListener(this);
+        mTvStylize.setOnClickListener(this);
         mTvFilter.setOnClickListener(this);
         mTvScrawl.setOnClickListener(this);
         mTvCrop.setOnClickListener(this);
         mTvTag.setOnClickListener(this);
         mTvMosaic.setOnClickListener(this);
+
+        // TensorFlow Stylize
+        mHlvStylize.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+                mStylizeAdapter.setSelectItem(position);
+                final int itemWidth = view.getWidth();
+                view.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mHlvStylize.scrollTo(itemWidth * (position - 1) - itemWidth / 4);
+                    }
+                }, 100);
+
+                // TODO
+                if (position > 0)
+                    getCurrentFragment().stylize(position - 1, 0.5f);
+            }
+        });
 
         mHlvFilter.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -304,6 +326,7 @@ public class BLBeautifyImageActivity extends BLToolBarActivity implements View.O
         };
     }
 
+
     /**
      * 文字贴图对话框
      */
@@ -339,6 +362,8 @@ public class BLBeautifyImageActivity extends BLToolBarActivity implements View.O
         int resId = v.getId();
         if (resId == R.id.txt_effect) {
             onFilterClick();
+        } else if(resId == R.id.txt_stylize) {
+            onStylizeClick();
         } else if (resId == R.id.txt_sticker) {
             onStickerClick();
         } else if (resId == R.id.txt_tag) {
@@ -356,9 +381,113 @@ public class BLBeautifyImageActivity extends BLToolBarActivity implements View.O
         }
     }
 
+    class StylizeAdapter extends BaseAdapter {
+        private int selectItem = 0;
+        private Context mInstance;
+        private static final int NUM_STYLES = 26;
+
+        StylizeAdapter(Context context) {
+            mInstance = context;
+        }
+
+        /**
+         * 从 assert 中加载
+         */
+        private Bitmap getBitmapFromAsset(final String filePath) {
+            final AssetManager assetManager = mInstance.getAssets();
+
+            Bitmap bitmap = null;
+            try {
+                final InputStream inputStream = assetManager.open(filePath);
+                bitmap = BitmapFactory.decodeStream(inputStream);
+            } catch (final IOException e) {
+                Log.e("E", "Error opening bitmap!");
+            }
+
+            return bitmap;
+        }
+
+        void setSelectItem(int selectItem) {
+            this.selectItem = selectItem;
+            this.notifyDataSetChanged();
+        }
+
+        @Override
+        public int getCount() {
+            return NUM_STYLES;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return position;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder holder = new ViewHolder();
+            if(convertView == null){
+                convertView = mInflater.inflate(R.layout.camerasdk_item_effect, null);
+                holder.img = (ImageView) convertView.findViewById(R.id.effect_img);
+                holder.title = (TextView) convertView.findViewById(R.id.title);
+                holder.item_back = (LinearLayout)convertView.findViewById(R.id.item_back);
+                convertView.setTag(holder);
+            }
+            else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            if (position > 0) {
+                holder.img.setImageBitmap(getBitmapFromAsset("thumbnails/style" + position + ".jpg"));
+            } else
+                holder.img.setImageResource(R.drawable.camerasdk_filter_normal);
+
+            // TODO 油画名称
+            if (position > 0)
+                holder.title.setText("油画 " + position);
+            else
+                holder.title.setText("原画");
+
+            if (position == selectItem) {
+                //holder.item_back.setBackgroundColor(Color.YELLOW);
+                holder.item_back.setBackgroundColor(BLConfigManager.getPrimaryColor());
+                holder.title.setTextColor(Color.WHITE);
+            }
+            else {
+                holder.item_back.setBackgroundColor(0xfff1f1f1);
+                holder.title.setTextColor(Color.BLACK);
+            }
+
+            return convertView;
+        }
+
+        public final class ViewHolder {
+            public LinearLayout item_back;
+            public ImageView img; // 图像
+            public TextView title;// 标题
+        }
+    }
+
+    private void onStylizeClick() {
+        setSelectedTxt(FUN_TYPE.STYLIZE);
+        mHlvStylize.setVisibility(View.VISIBLE);
+        mHlvFilter.setVisibility(View.GONE);
+        mHlvSticker.setVisibility(View.GONE);
+        mBtnCreateTag.setVisibility(View.GONE);
+        if (mStylizeAdapter == null) {
+            mStylizeAdapter = new StylizeAdapter(mInstance);
+            mHlvStylize.setAdapter(mStylizeAdapter);
+        }
+    }
+
     private void onFilterClick() {
         setSelectedTxt(FUN_TYPE.FILTER);
         mHlvFilter.setVisibility(View.VISIBLE);
+        mHlvStylize.setVisibility(View.GONE);
         mHlvSticker.setVisibility(View.GONE);
         mBtnCreateTag.setVisibility(View.GONE);
         if (mFilterAdapter == null) {
@@ -372,6 +501,7 @@ public class BLBeautifyImageActivity extends BLToolBarActivity implements View.O
         mHlvFilter.setVisibility(View.GONE);
         mHlvSticker.setVisibility(View.VISIBLE);
         mBtnCreateTag.setVisibility(View.GONE);
+        mHlvStylize.setVisibility(View.GONE);
         if (mStickerAdapter == null) {
             mStickerAdapter = new Filter_Sticker_Adapter(mInstance, mStickerData);
             mHlvSticker.setAdapter(mStickerAdapter);
@@ -382,6 +512,7 @@ public class BLBeautifyImageActivity extends BLToolBarActivity implements View.O
         setSelectedTxt(FUN_TYPE.TAG);
         mHlvFilter.setVisibility(View.GONE);
         mHlvSticker.setVisibility(View.GONE);
+        mHlvStylize.setVisibility(View.GONE);
         mBtnCreateTag.setVisibility(View.VISIBLE);
     }
 
@@ -449,6 +580,7 @@ public class BLBeautifyImageActivity extends BLToolBarActivity implements View.O
 
     private void setSelectedTxt(FUN_TYPE type) {
         mTvFilter.setTextColor(TXT_NORMAL_COLOR);
+        mTvStylize.setTextColor(TXT_NORMAL_COLOR);
         mTvSticker.setTextColor(TXT_NORMAL_COLOR);
         mTvCrop.setTextColor(TXT_NORMAL_COLOR);
         mTvTag.setTextColor(TXT_NORMAL_COLOR);
@@ -457,6 +589,10 @@ public class BLBeautifyImageActivity extends BLToolBarActivity implements View.O
 
         BLBeautifyFragment fragment = (BLBeautifyFragment) fragments.get(curPosition);
         switch (type) {
+            case STYLIZE:
+                mTvStylize.setTextColor(TXT_SELECTED_COLOR);
+                fragment.stickerLocked(true);
+                break;
             case FILTER:
                 mTvFilter.setTextColor(TXT_SELECTED_COLOR);
                 fragment.stickerLocked(true);

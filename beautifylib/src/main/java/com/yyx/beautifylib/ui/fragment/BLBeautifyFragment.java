@@ -19,9 +19,9 @@ import com.yyx.beautifylib.view.BLBeautifyImageView;
 import java.util.List;
 
 /**
+ *
  * Created by Administrator on 2017/4/15.
  */
-
 public class BLBeautifyFragment extends Fragment {
     private BLBeautifyImageView mBeautifyImage;
     private String mPath;
@@ -70,10 +70,18 @@ public class BLBeautifyFragment extends Fragment {
 
     /**
      * 添加滤镜
-     * @param filterType
      */
     public void addFilter(ImageFilterTools.FilterType filterType){
         mBeautifyImage.addFilter(filterType);
+    }
+
+    /**
+     * 设置 TensorFlow Stylize
+     * @param index 目标油画渲染器的index, 不做合法性检查
+     @param value 风格化的程度, 0.0f ~ 1.0f
+     */
+    public void stylize(final int index, final float value) {
+        mBeautifyImage.stylize(index, value);
     }
 
     public Bitmap getBitmap(){

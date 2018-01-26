@@ -73,7 +73,7 @@ public class ActivityUtils {
     }
 
     /**
-     *  启动有返回值的Activity
+     * 启动有返回值的Activity
      * @param activity
      * @param intent
      * @param requestCode

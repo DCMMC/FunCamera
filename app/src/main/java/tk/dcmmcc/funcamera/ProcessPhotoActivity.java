@@ -28,6 +28,9 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import tk.dcmmcc.funcamera.tensorflow.StylizeActivity;
 
+/**
+ * 图片处理
+ */
 public class ProcessPhotoActivity extends AppCompatActivity
         implements EasyPermissions.PermissionCallbacks {
     //拍的照片的bitmap

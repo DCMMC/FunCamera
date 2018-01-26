@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
@@ -31,12 +32,14 @@ import com.yyx.beautifylib.tag.views.TagImageView;
 import com.yyx.beautifylib.utils.BLBitmapUtils;
 import com.yyx.beautifylib.utils.FilterUtils;
 
+import org.tensorflow.demo.utils.StylizeUtil;
+
 import java.util.List;
 
 /**
+ *
  * Created by Administrator on 2017/4/15.
  */
-
 public class BLBeautifyImageView extends FrameLayout {
     private Context mContext;
     private StickerView mStickerView;
@@ -66,7 +69,38 @@ public class BLBeautifyImageView extends FrameLayout {
         initStickerView();
     }
 
-    /**********************************GPUImageView相关*********************************/
+    /**
+     * TensorFlow Stylize
+     * @param index 目标油画渲染器的index, 不做合法性检查
+     * @param value 风格化的程度, 0.0f ~ 1.0f
+     */
+    public void stylize(final int index, final float value) {
+        //Bitmap resized = Bitmap.createScaledBitmap(mGpuImageView.getCurrentBitMap(),
+        //        mGpuImageView.getWidth(),
+        //        mGpuImageView.getHeight(),
+        //        false);
+        // 获取这个图片的宽和高
+        float width = mGpuImageView.getCurrentBitMap().getWidth();
+        float height = mGpuImageView.getCurrentBitMap().getHeight();
+        // 创建操作图片用的matrix对象
+        Matrix matrix = new Matrix();
+        // 计算宽高缩放率
+        float scaleWidth = 1280.0f / width;
+        float scaleHeight = 1280.0f / height;
+        // 缩放图片动作
+        matrix.postScale(scaleWidth, scaleHeight);
+        Bitmap bitmap = Bitmap.createBitmap(mGpuImageView.getCurrentBitMap(), 0, 0, (int) width,
+                (int) height, matrix, true);
+        //resized.setConfig(Bitmap.Config.ARGB_8888);
+        StylizeUtil.stylizeImage(bitmap, mContext, index, value);
+        matrix = new Matrix();
+        matrix.postScale(2.5f,2.5f);  //长和宽放大缩小的比例
+        Bitmap resizeBmp = Bitmap.createBitmap(bitmap,
+                0,0,bitmap.getWidth(), bitmap.getHeight(),matrix,true);
+        mGpuImageView.setImage(resizeBmp);
+    }
+
+    /********************************** GPUImageView相关 *********************************/
     public void addFilter(ImageFilterTools.FilterType filterType) {
         FilterUtils.addFilter(mContext, filterType, mGpuImageView);
     }
@@ -135,8 +169,6 @@ public class BLBeautifyImageView extends FrameLayout {
 
     /**
      * 合并图片
-     *
-     * @return
      */
     public String getFilterImage() {
         mGpuImageView.setDrawingCacheEnabled(true);
