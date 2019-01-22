@@ -8,6 +8,9 @@
 
 **Star me if you like it!**
 
+> 因为手头上只有台 `Nexus4` (Android 8.1), 性能实在是不太好, 现在 tensorflow 的 stylish 没法使用, 懒得 debug 了... 暂且放放
+> 因为 `build.gradle` 有些地方缺乏实践, 瞎写的, 所以估计过一段时间直接是跑不起来的, 酌情更改 `build.gradle` 文件
+
 ## Introduction
 
 > A simple camera app using TensorFlow to classify object and stylize pictures.
@@ -29,6 +32,18 @@
 ![](./screenshot/open_sources1.png)
 
 ![](./screenshot/classfier.png)
+
+![take_photot](assets/take_photo.png)
+
+![permission](assets/permission.png)
+
+![resize](assets/resize.png)
+
+![stylish](assets/stylish.png)
+
+![edit_photo](assets/edit_photo.png)
+
+![edit_photo_old](assets/edit_photo_old.png)
 
 ## Credits
 

@@ -1,7 +1,7 @@
 package tk.dcmmcc.funcamera;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
@@ -26,7 +26,7 @@ import tk.dcmmcc.funcamera.tensorflow.StylizeActivity;
 /**
  * 主入口Activity
  */
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
     //保存好生成的抽屉
     private AccountHeader headerResult = null;
     private Drawer drawerResult = null;
